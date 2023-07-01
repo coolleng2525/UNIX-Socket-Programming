@@ -17,6 +17,8 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 
+#include "publics.h"
+
 #define HCS_TCP_STATIC_PORT		"21338"
 #define MY_USCID	338
 
@@ -62,7 +64,14 @@ int load_credentials(){
 	strcpy(password, token);
 	fclose(fp);
 }
-
+#ifndef isdigit
+int isdigit(char c){
+	if(c >= '0' && c <= '9')
+		return 1;
+	else
+		return 0;
+}
+#endif
 /*select the index option entered by patient2*/
 void select_choice(char buf[], char choice[2]){
 	const char s[2] = "\n";
@@ -101,7 +110,7 @@ int phase1_2(){
 	int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;  /*use AF_INET6 to force IPv6*/
@@ -286,7 +295,7 @@ int phase3(){
 	int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;  /*use AF_INET6 to force IPv6*/

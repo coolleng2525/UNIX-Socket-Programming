@@ -19,6 +19,8 @@
 #include <pthread.h>
 #include <sys/mman.h>
 
+#include "publics.h"
+
 #define HCS_TCP_STATIC_PORT		"21338"
 #define BACKLOG 10
 #define MAXBUFLEN 256
@@ -93,7 +95,7 @@ int create_users(){
 	char buf[256];
 
 	/* opening file for reading */
-	fp = fopen("users.txt", "r");
+	fp = fopen(USER_FILE, "r");
 	if(fp == NULL){
 		perror("Error opening file\n");
 		return -1;
@@ -227,7 +229,7 @@ int phase1(){
 	int status, sockfd = 0;
 	struct addrinfo hints;
 	struct addrinfo *res, *p; // will point to the results
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
 	char s[INET6_ADDRSTRLEN];
 	int new_fd = 0;
 	struct sockaddr_storage their_addr;
@@ -291,6 +293,7 @@ int phase1(){
 		return -1;
 	}
 
+#ifdef ENABLE_SIGCHLD
 	/*code extracted from beej guide*/
 	sa.sa_handler = sigchld_handler; // reap all dead processes
 	sigemptyset(&sa.sa_mask);
@@ -299,7 +302,7 @@ int phase1(){
 		perror("sigaction");
 		exit(1);
 	}
-
+#endif
 	/*code extracted from beej guide*/
 	while(1)
 	{

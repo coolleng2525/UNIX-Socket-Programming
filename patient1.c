@@ -17,6 +17,8 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 
+#include "publics.h"
+
 #define HCS_TCP_STATIC_PORT		"21338"
 #define MY_USCID	338
 
@@ -35,6 +37,14 @@ void *get_in_addr(struct sockaddr *sa) {
 					: (void *) &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+#ifndef isdigit
+int isdigit(char c){
+	if(c >= '0' && c <= '9')
+		return 1;
+	else
+		return 0;
+}
+#endif
 /*fetching the contents of patient1.txt*/
 int load_credentials(){
 	/*code extracted from "Some Hints" discussion pdf*/
@@ -76,9 +86,14 @@ void select_choice(char buf[], char choice[2]){
 		printf("\nPlease enter the preferred appointment index and press enter: ");
 		scanf("%s", choice);
 
+		DEBUG_PRINT("choice: %s\n", choice);
 		if(isdigit(choice[0]) && !isdigit(choice[1])){
+
 			token = strtok(temp_buf, s);
+			DEBUG_PRINT("token:%s", token);
+			DEBUG_PRINT("s:%s", s);
 			while(token != NULL){
+				DEBUG_PRINT("token:%c choice:%c", token[0], choice[0]);
 				if(token[0] == choice[0])
 					goto done;
 				token = strtok(0, s);
@@ -86,7 +101,7 @@ void select_choice(char buf[], char choice[2]){
 		}
 		strcpy(choice, "");
 	}
-
+	DEBUG_AT();
 	done:
 	return;
 }
@@ -101,7 +116,7 @@ int phase1_2(){
 	int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;  /*use AF_INET6 to force IPv6*/
@@ -121,6 +136,7 @@ int phase1_2(){
 		if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
 			close(sockfd);
 			perror("connect");
+			DEBUG_AT();
 			continue;
 		}
 		break; /*if we get here, we must have connected successfully*/
@@ -286,7 +302,7 @@ int phase3(){
 	int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;  /*use AF_INET6 to force IPv6*/

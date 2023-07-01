@@ -19,6 +19,7 @@
 #include <pthread.h>
 #include <sys/mman.h>
 
+#include "publics.h"
 #define DOC1_UDP_STATIC_PORT		"41338"
 #define MAXBUFLEN 256
 
@@ -73,7 +74,8 @@ int main(){
 	int status, sockfd = 0;
 	struct addrinfo hints;
 	struct addrinfo *res, *p; // will point to the results
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
+
 	char s[INET6_ADDRSTRLEN];
 	int new_fd = 0;
 	struct sockaddr_storage their_addr;

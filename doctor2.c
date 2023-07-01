@@ -22,6 +22,8 @@
 #define DOC1_UDP_STATIC_PORT		"41338"
 #define MAXBUFLEN 256
 
+#include "publics.h"
+
 struct insurance_detail{
 	char insurance[50];
 	char amount[10];
@@ -73,7 +75,7 @@ int main(){
 	int status, sockfd = 0;
 	struct addrinfo hints;
 	struct addrinfo *res, *p; // will point to the results
-	const char *addr = "nunki.usc.edu";
+	const char *addr = US_SERVER_HOST;
 	char s[INET6_ADDRSTRLEN];
 	int new_fd = 0;
 	struct sockaddr_storage their_addr;
